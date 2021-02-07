@@ -1,8 +1,13 @@
-class GuitarNeck {
+import { Note, Scale } from "@tonaljs/tonal";
+import * as d3 from "d3";
+
+export default class GuitarNeck {
     constructor(parentSVG) {
         this.parent = parentSVG;
         // size of chart
-        this.totalWidth = width;
+        this.totalWidth = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
         this.totalHeight = Math.max(this.totalWidth / 6, 200);
 
         this.margin = {
@@ -14,8 +19,8 @@ class GuitarNeck {
 
         // tuning, number of strings/frets
         this.tuning = ["E4", "B3", "G3", "D3", "A2", "E2"];
-        this.parsedTuning = tuning.map(tonal.Note.get);
-        this.numStrings = tuning.length;
+        this.parsedTuning = this.tuning.map(Note.get);
+        this.numStrings = this.tuning.length;
         this.minFret = 0;
         this.maxFret = Math.round(this.totalWidth / 48);
 
@@ -46,7 +51,7 @@ class GuitarNeck {
                     .split(" ")
                     .slice(1, scale.split(" ").length)
                     .join(" ");
-            let notes = tonal.Scale.scale(int_string).notes;
+            let notes = Scale.scale(int_string).notes;
             arr.push(notes);
         }
         // return notes
@@ -55,7 +60,7 @@ class GuitarNeck {
 
     // place the notes onto a string
     placeNote(noteOrStr) {
-        const note = tonal.Note.get(noteOrStr);
+        const note = Note.get(noteOrStr);
         return this.parsedTuning
             .map(string => note.height - string.height)
             .map((fret, stringIndex) =>
@@ -68,7 +73,7 @@ class GuitarNeck {
 
     // return to data
     addScale(scale) {
-        this.placements = getNotes(scale)
+        this.placements = this.getNotes(scale)
             .map(d => this.placeNote(d))
             .flat();
     }
@@ -77,12 +82,12 @@ class GuitarNeck {
         const stringToY = d3
             .scaleLinear()
             .domain([1, this.numStrings])
-            .range([margin.top, this.totalHeight - this.margin.bottom]);
+            .range([this.margin.top, this.totalHeight - this.margin.bottom]);
 
         const fretToX = d3
             .scaleLinear()
             .domain([this.minFret, this.maxFret])
-            .range([margin.left, this.totalWidth - this.margin.right]);
+            .range([this.margin.left, this.totalWidth - this.margin.right]);
 
         const g1 = this.parent.append("g");
 
@@ -110,7 +115,7 @@ class GuitarNeck {
 
         const g2 = this.parent.append("g");
         g2.append("g")
-            .attr('transform', `translate(${margin.left - 10}, -0.5)`)
+            .attr('transform', `translate(${this.margin.left - 10}, -0.5)`)
             .style("font-size", "20px")
             .call(
                 d3
@@ -126,7 +131,7 @@ class GuitarNeck {
                 'transform',
                 `translate(${-(fretToX.range()[1] / this.maxFret) / 2}, ${this
                     .totalHeight -
-                margin.bottom +
+                this.margin.bottom +
                 12})`
             )
             .style("font-size", "10px")
@@ -155,6 +160,7 @@ class GuitarNeck {
             .attr('stroke', 'black')
             .attr('stroke-width', 2)
             .attr('r', d => (d.fret - 0.5 < 0 ? 0 : 8))
+            // eslint-disable-next-line
             .on("pointerenter", function (event, d) {
                 tooltip.style("visibility", "visible");
             })
@@ -167,6 +173,7 @@ class GuitarNeck {
                     .html(`${d.note.pc}`)
                     .style("font-family", "sans-serif");
             })
+            // eslint-disable-next-line
             .on("pointerleave", function (event, d) {
                 tooltip.style("visibility", "hidden");
             });

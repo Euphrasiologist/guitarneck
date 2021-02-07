@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "pretest": "rollup -c",
-    "prepublish": "/Users/mb39/homebrew/bin/yarn test",
+    "prepublish": "yarn test",
     "test": "eslint src"
   },
   "repository": {
@@ -41,6 +41,6 @@
     "eslint": "6",
     "jsdom": "15",
     "rollup": "1",
-    "rollup-plugin-terser": "5"
+    "rollup-plugin-terser": "^5.3.1"
   }
 }
