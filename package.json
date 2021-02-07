@@ -1,0 +1,46 @@
+{
+  "name": "guitarneck",
+  "version": "1.0.0",
+  "description": "Class to create a guitar neck visualisation using D3.",
+  "main": "index.js",
+  "unpkg": "dist/guitarneck.min.js",
+  "jsdelivr": "dist/guitarneck.min.js",
+  "module": "src/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "files": [
+    "dist/**/*.js",
+    "src/**/*.js"
+  ],
+  "scripts": {
+    "pretest": "rollup -c",
+    "prepublish": "/Users/mb39/homebrew/bin/yarn test",
+    "test": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Euphrasiologist/guitarneck.git"
+  },
+  "dependencies": {
+    "d3": "6",
+    "tonal": "4.6.0"
+  },
+  "keywords": [
+    "guitar",
+    "scale",
+    "visualisation"
+  ],
+  "author": "Max Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Euphrasiologist/guitarneck/issues"
+  },
+  "homepage": "https://github.com/Euphrasiologist/guitarneck#readme",
+  "devDependencies": {
+    "eslint": "6",
+    "jsdom": "15",
+    "rollup": "1",
+    "rollup-plugin-terser": "5"
+  }
+}
