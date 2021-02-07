@@ -7,13 +7,15 @@ Development to come, want to make it more interative.
 The API is super simple, and requires D3 & tonal.js:
 
 ```javascript
-    const w = 1024,
-          h = 200;
-    const svg = d3.create("svg").attr("viewBox", [0, 0, w, h]);
+const w = 1024,
+        h = 200;
+const svg = d3.create("svg").attr("viewBox", [0, 0, w, h]);
 
-    let scale = "C melodic minor"
+let scale = "C melodic minor"
 
-    new GuitarNeck(svg).render(scale);
-    
-    return svg.node();
+new GuitarNeck(svg).render(scale);
+
+return svg.node();
 ```
+
+See it live in action at Observable: https://observablehq.com/@euphrasiologist/scales
