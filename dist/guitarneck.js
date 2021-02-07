@@ -1,4 +1,4 @@
-// https://github.com/Euphrasiologist/guitarneck#readme v1.0.0 Copyright 2021 Max Brown
+// https://github.com/Euphrasiologist/guitarneck#readme v1.0.1 Copyright 2021 Max Brown
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@tonaljs/tonal'), require('d3')) :
 typeof define === 'function' && define.amd ? define(['@tonaljs/tonal', 'd3'], factory) :
@@ -9,13 +9,11 @@ class GuitarNeck {
     constructor(parentSVG) {
         this.parent = parentSVG;
         // size of chart
-        this.totalWidth = window.innerWidth
-        || document.documentElement.clientWidth
-        || document.body.clientWidth;
-        this.totalHeight = Math.max(this.totalWidth / 6, 200);
+        this.totalWidth = 1024;
+        this.totalHeight = Math.max(this.totalWidth / 6, 300);
 
         this.margin = {
-            top: 10,
+            top: 120,
             right: 10,
             left: 30,
             bottom: 30
@@ -30,6 +28,8 @@ class GuitarNeck {
 
         // data
         this.placements = null;
+        // scale
+        this.scale = null;
         // tooltip
         this.tooltip = d3.select("body")
             .append("div")
@@ -37,9 +37,19 @@ class GuitarNeck {
             .attr("class", "tiplabs")
             .style("font-family", "sans-serif")
             .style("position", "absolute")
+            .style("text-align", "center")
             .style("visibility", "hidden")
-            .style("background-color", "black")
-            .style("list-style", "none");
+            .style("border-style", "solid")
+            .style("border-color", "black")
+            .style("background-color", "white")
+            .style("list-style", "none")
+            .style("width", "20px");
+    }
+
+    size(width, height) {
+        this.totalWidth = width;
+        this.totalHeight = height;
+        return this;
     }
 
     // get the notes of the scale
@@ -76,6 +86,7 @@ class GuitarNeck {
 
     // return to data
     addScale(scale) {
+        this.scale = scale;
         this.placements = this.getNotes(scale)
             .map(d => this.placeNote(d))
             .flat();
@@ -153,6 +164,7 @@ class GuitarNeck {
             .data(this.placements)
             .join('circle')
             .attr('class', 'placement')
+            .attr('id', d => d.note.pc)
             .attr('cx', d => fretToX(d.fret - 0.5))
             .attr('cy', d => stringToY(d.string))
             .attr('fill', 'black')
@@ -161,26 +173,50 @@ class GuitarNeck {
             .attr('r', d => (d.fret - 0.5 < 0 ? 0 : 8))
             // eslint-disable-next-line
             .on("pointerenter", function (event, d) {
+                g3.selectAll('#' + d.note.pc).attr('fill', 'orange');
                 tooltip.style("visibility", "visible");
             })
             .on("pointermove", function (event, d) {
+                g3.selectAll('#' + d.note.pc).attr('fill', 'orange');
+
                 tooltip
                     .style("top", event.pageY - 10 + "px")
                     .style("left", event.pageX + 10 + "px")
-                    .style("color", "white")
+                    .style("color", "black")
                     .style("font-style", "normal")
                     .html(`${d.note.pc}`)
                     .style("font-family", "sans-serif");
             })
             // eslint-disable-next-line
             .on("pointerleave", function (event, d) {
+                g3.selectAll('#' + d.note.pc).attr('fill', 'black');
                 tooltip.style("visibility", "hidden");
             });
+    }
+
+    // add html text
+
+    addHTML() {
+        const g4 = this.parent.append("g");
+
+        g4.append("foreignObject")
+            //.attr("transform", (d, i) => "translate(20,250)")
+            .attr("width", this.totalWidth / 2)
+            .attr("height", this.margin.top)
+            .append("xhtml:div")
+            .attr("class", "textbox")
+            .style("font", "19px 'Helvetica Neue'")
+            .html(
+                `<h1>Scale: ${this.scale}</h1><p>Containing the notes: ${Array.from(
+                    new Set(this.placements.map(d => d.note.pc))
+                ).map(d => " " + d)}</p>`
+            );
     }
 
     render(scale) {
         this.addScale(scale);
         this.drawFretBoard();
+        this.addHTML();
         return this;
     }
 }

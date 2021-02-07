@@ -1,6 +1,6 @@
 {
   "name": "guitarneck",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Class to create a guitar neck visualisation using D3.",
   "main": "index.js",
   "unpkg": "dist/guitarneck.min.js",

@@ -2,20 +2,18 @@
 
 Simple class wrapper in a style I liked, based on code <a href="https://observablehq.com/@awhitty/fretboard#tonal">here</a>, so thank you A. Whitty.
 
-Development to come, want to make it more interative.
-
 The API is super simple, and requires D3 & tonal.js:
 
 ```javascript
-const w = 1024,
-        h = 200;
-const svg = d3.create("svg").attr("viewBox", [0, 0, w, h]);
+  const w = 1024,
+    h = 300;
+  const svg = d3.create("svg").attr("viewBox", [0, 0, w, h]);
 
-let scale = "C melodic minor"
+  let scale = key + " " + scaleType;
 
-new GuitarNeck(svg).render(scale);
+  new GuitarNeck(svg).size(w, h).render(scale);
 
-return svg.node();
+  return svg.node();
 ```
 
 See it live in action at Observable: https://observablehq.com/@euphrasiologist/scales
